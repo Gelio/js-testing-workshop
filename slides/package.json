@@ -1,0 +1,29 @@
+{
+  "private": true,
+  "version": "1.1.0",
+  "description": "Deck created with mdx-deck",
+  "scripts": {
+    "start": "mdx-deck deck.mdx",
+    "copy-static": "cp static dist -r",
+    "build": "mdx-deck build deck.mdx",
+    "postbuild": "npm run copy-static",
+    "pdf": "mdx-deck pdf deck.mdx",
+    "image": "mdx-deck screenshot deck.mdx",
+    "help": "mdx-deck",
+    "prepublish-deck": "npm run build",
+    "publish-deck": "gh-pages -d dist"
+  },
+  "keywords": [],
+  "author": "Grzegorz Rozdzialik",
+  "license": "MIT",
+  "dependencies": {
+    "mdx-deck": "^1.10.2",
+    "mdx-deck-code-surfer": "^0.5.5",
+    "raw-loader": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.8.15",
+    "gh-pages": "^2.0.1"
+  },
+  "name": "mdx-deck-template"
+}

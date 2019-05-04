@@ -1,0 +1,587 @@
+import { Head, Code, Appear, components as Components } from 'mdx-deck'
+import { FullscreenCode, Split, SplitRight } from 'mdx-deck/layouts'
+import ThemedCodeSurfer from './components/themed-code-surfer.js'
+
+import { future } from 'mdx-deck/themes'
+import codeHighlightStyle from 'react-syntax-highlighter/styles/prism/tomorrow'
+import prismTypescript from 'react-syntax-highlighter/languages/prism/typescript'
+import prismTsx from 'react-syntax-highlighter/languages/prism/tsx'
+
+export const theme = {
+  ...future,
+  prism: {
+    style: codeHighlightStyle,
+    languages: {
+      typescript: prismTypescript,
+      tsx: prismTsx,
+    },
+  },
+}
+
+<Head>
+  <title>Javascript & React testing</title>
+</Head>
+
+# Javascript & React testing
+
+Author: Grzegorz Rozdzialik
+
+---
+
+## Concepts covered
+
+1. Types of tests
+
+   - unit tests
+   - integration tests
+   - end-to-end tests
+   - visual tests
+
+2. Testing libraries and tools
+3. Integrating tests into CI
+4. Pros and cons of testing
+5. Hints on writing testable code
+
+---
+
+## A story of developing a feature
+
+[Global average temperature visualization](https://gelio.github.io/temperature-heat-map/public/)
+
+---
+
+1. API returns an array of the following objects:
+
+   ```js
+   {
+     "year": 1753,
+     "month": 1,
+     "temperature": 7.29
+   }
+   ```
+
+2. Map each temperature to a specific color
+3. Display the chart (e.g. using `recharts`)
+
+---
+
+<ThemedCodeSurfer
+  title="Naive approach"
+  code={require('!raw-loader!./snippets/1-naive-approach-class.js').default}
+  steps={[
+    {
+      range: [1, 8],
+      notes: 'Class with state',
+    },
+    {
+      range: [10, 57],
+      notes: 'componentDidMount responsible for data fetching',
+    },
+    {
+      range: [11, 13],
+      notes: 'fetch',
+    },
+    {
+      range: [13, 44],
+      notes: 'process data',
+    },
+    {
+      range: [46, 49],
+      notes: 'save the data',
+    },
+    {
+      range: [51, 56],
+      notes: 'handle errors',
+    },
+    {
+      range: [59, 71],
+      notes: 'render method',
+    },
+  ]}
+/>
+
+---
+
+<ThemedCodeSurfer
+  title="Naive approach (using hooks)"
+  code={require('!raw-loader!./snippets/2-naive-approach-hooks.js').default}
+  steps={[
+    {
+      range: [1, 6],
+      notes: 'Declare state',
+    },
+    {
+      range: [8, 51],
+      notes: 'useEffect responsible for data fetching',
+    },
+    {
+      range: [9, 11],
+      notes: 'fetch',
+    },
+    {
+      range: [11, 42],
+      notes: 'process data',
+    },
+    {
+      range: [44, 45],
+      notes: 'save the data',
+    },
+    {
+      range: [47, 50],
+      notes: 'handle errors',
+    },
+    {
+      range: [53, 61],
+      notes: 'render',
+    },
+  ]}
+/>
+
+---
+
+## Renders fine, but what are the downsides?
+
+---
+
+## Downsides
+
+1. Multiple concerns in one file/function (data fetching, data processing, handling errors,
+   rendering results)
+2. Mixed concerns could be harder to read and comprehend
+3. Difficulty in automated testing
+
+---
+
+## What is _automated testing_?
+
+<Appear>
+  <Components.ul>
+    <li>execution of a software component to evaluate its properties</li>
+    <li>verifying that the code is correct</li>
+    <li>
+      verifying that components work well with each other (
+      <em>integrate well</em>)
+    </li>
+    <li>verifying that the system works as designed</li>
+    <li>using software to imitate user's behavior and find bugs</li>
+  </Components.ul>
+</Appear>
+
+---
+
+<ThemedCodeSurfer
+  title="How to test this component?"
+  code={require('!raw-loader!./snippets/3-naive-approach-shortened.js').default}
+  steps={[{ notes: '' }]}
+/>
+
+---
+
+## Let's extract pieces and test them separately
+
+aka. **unit testing** - testing a single unit (of a program) at a time, in isolation
+
+---
+
+<ThemedCodeSurfer
+  title="Data processing that could be extracted"
+  code={require('!raw-loader!./snippets/2-naive-approach-hooks.js').default}
+  steps={[
+    {},
+    {
+      range: [12, 42],
+      notes: 'Data processing',
+    },
+  ]}
+/>
+
+---
+
+<ThemedCodeSurfer
+  title="Extracted function that processes data points"
+  code={require('!raw-loader!./snippets/4-single-data-point.js').default}
+  steps={[{}]}
+/>
+
+---
+
+## A naive test
+
+```tsx
+const result = processChartPoint({ year: '2010', month: '1', temperature: 8 })
+
+if (result.color !== 'red') {
+  console.error('Color is wrong for temperature = 8')
+}
+```
+
+---
+
+## But wait, there are libraries for that
+
+1. Assertion libraries
+2. Test runners
+
+---
+
+### Assertion libraries
+
+- provide functions that test results against some expectations
+
+```tsx
+expect(result).toBe('hello world')
+expect(1 + 2).toBe(3)
+expect('some long string').toContain('long')
+expect(result).toEqual({
+  some: 'object',
+})
+```
+
+Examples: [chai](http://chaijs.com/), [**jasmine**](http://jasmine.github.io/), [**jest**](https://facebook.github.io/jest/)
+
+---
+
+### Test runners
+
+- provide structure of tests and methods to declare them
+- provide utility methods that run before/after each/all tests
+- run tests
+
+```tsx
+describe('Global temperature chart', () => {
+  describe('processChartPoint', () => {
+    it('should map temperature below 5 to blue', () => {
+      // invoke `processChartPoint` and use an assertion to test the result
+    })
+  })
+})
+```
+
+Examples: [mocha](https://mochajs.org/), [**jasmine**](http://jasmine.github.io/), [**jest**](https://facebook.github.io/jest/)
+
+---
+
+<ThemedCodeSurfer
+  title="A full test"
+  code={require('!raw-loader!./snippets/4b-example-test.js').default}
+  steps={[
+    {},
+    {
+      range: [5, 14],
+      notes: 'AAA - Arrange, Act, Assert',
+    },
+    {
+      range: [6, 7],
+      notes: 'Arrange - prepare all the preconditions',
+    },
+    {
+      range: [9, 10],
+      notes: 'Act - invoke the tested function',
+    },
+    {
+      range: [12, 13],
+      notes: 'Assert - check if the result matches the expectations',
+    },
+  ]}
+/>
+
+---
+
+### Run tests
+
+- Each test runner has its own configuration
+- I recommend _jest_ as it seems the easiest to set up
+- _jest_ is the default tool in _create-react-app_
+
+```sh
+jest process-chart-point.js
+# Or, to run tests after every change
+jest process-chart-point.js --watch
+
+```
+
+---
+
+TODO: gif from running tests
+
+---
+
+## Workshop preparation
+
+1. Clone https://github.com/Gelio/js-testing-workshop
+2. Run `npm install`
+3. Enter the `workshop/src` directory
+
+---
+
+## Task 1
+
+1. Checkout the `task-1` branch
+2. Write unit tests for `processChartPoint`
+
+- use `npm run test -- --watch` to run the tests
+- make sure every case is covered
+- try to not repeat code
+- maybe there is a way to write a single test, but with different inputs?
+
+---
+
+<ThemedCodeSurfer
+  title="What to test next?"
+  code={
+    require('!raw-loader!./snippets/5-component-using-external-data-processing.js')
+      .default
+  }
+  steps={[
+    {},
+    {
+      range: [10, 21],
+      notes: 'How about data fetching?',
+    },
+  ]}
+/>
+
+---
+
+<ThemedCodeSurfer
+  title="Extracted data-fetching part"
+  code={require('!raw-loader!./snippets/6-extracted-data-fetching.js').default}
+  steps={[
+    { notes: 'Notice any problems?' },
+    { lines: [4], notes: 'Using fetch will result in a network request' },
+  ]}
+/>
+
+---
+
+### Why issuing network requests in tests is not a good idea?
+
+1. Increased test duration (imagine fetching that data in multiple tests)
+2. A network request may fail (or timeout)
+3. Not much control over the amount of retrieved payload
+
+   What if we wanted to cover multiple cases, e.g. empty file, file with data set 1, file with data set 2, etc.
+
+---
+
+### How to mitigate the problem?
+
+**Dependency injection** (DI) - injecting a necessary piece of code (a function, an object) to a
+component dynamically at runtime instead of using a direct static link in the code
+
+---
+
+<ThemedCodeSurfer
+  title="Data-fetching with dependency injection"
+  code={require('!raw-loader!./snippets/7-data-fetching-with-di.js').default}
+  steps={[
+    {},
+    {
+      lines: [3, 4],
+      notes:
+        'fetch is now provided as a parameter. The global fetch is not referenced directly',
+    },
+    {
+      lines: [13, 14],
+      notes: 'Usage is similar, but now the global fetch has to be passed in',
+    },
+  ]}
+/>
+
+---
+
+<ThemedCodeSurfer
+  title="How does it help?"
+  code={require('!raw-loader!./snippets/8-mocked-fetch.js').default}
+  steps={[
+    {
+      notes:
+        'fetch can now be mocked - only imitate a real network request, but return fake data',
+    },
+  ]}
+/>
+
+---
+
+## Task 2
+
+`getGlobalTemperatureChartData` still uses a real `processChartPoint`
+
+1. Checkout branch `task-2`
+2. Provide `processChartPoint` as a dependency
+3. Write tests to fully test `getGlobalTemperatureChartData` (all cases)
+
+- experiment with _jest_'s `jest.fn` (mock)
+- see what **spy** functions are available via `jest.fn` (e.g. `.toHaveBeenCalled`)
+
+---
+
+## Cases to be tested in task 2
+
+- happy path - network request succeeds
+- network request succeeds, but returned data is in wrong shape (not an array)
+- network request fails
+
+---
+
+<ThemedCodeSurfer
+  title="GlobalTemperatureChart after extracting its dependencies"
+  code={
+    require('!raw-loader!./snippets/9-component-after-fetching-extraction-impure.js')
+      .default
+  }
+  steps={[
+    { notes: 'What if it was to be tested now?' },
+    { lines: [11], notes: 'A global fetch is used. How to inject it?' },
+  ]}
+/>
+
+---
+
+<ThemedCodeSurfer
+  title="Dependency Injection in React (using props)"
+  code={
+    require('!raw-loader!./snippets/10-component-after-fetching-extraction-pure-props.js')
+      .default
+  }
+  steps={[{}, { lines: [5, 11], notes: 'Using props' }]}
+/>
+
+---
+
+<ThemedCodeSurfer
+  title="Dependency Injection in React (using context)"
+  code={
+    require('!raw-loader!./snippets/11-component-after-fetching-extraction-pure-context.js')
+      .default
+  }
+  steps={[
+    {},
+    {
+      lines: [4, 10, 13],
+      notes: 'Using context. A context provider has to be in place',
+    },
+    {
+      lines: [13],
+      notes:
+        'Still impure, as getGlobalTemperatureChartData is used directly. Does it matter? Not much',
+    },
+  ]}
+/>
+
+---
+
+## Functional programming digression
+
+`getGlobalTemperatureChartData` is now a **pure function** and maintains **referential transparency**
+
+---
+
+## Pure functions
+
+1. Does not use any external symbols or global state.
+2. Uses only its parameters
+3. Is easy to test, as it does not require any particular global setup
+
+---
+
+## Referential transparency
+
+1. Invoking the function with the same arguments yields the same results
+2. Does not rely on global state
+3. The function invocation can be replaced with its return value and the behavior of the program should not change
+
+   ```tsx
+   const result = someFunction()
+   ```
+
+   should be exactly the same as
+
+   ```tsx
+   const result = /* the return value of someFunction(); */
+   ```
+
+---
+
+---
+
+## Unit tests summary
+
+- test single components/functions in isolation
+- fast
+- small
+- use Dependency Injection and mocking to isolate units
+- very useful for testing business logic (pure functions, functions that process data, reducers, etc.)
+- do not guarantee that the app will ever work (does not integrate modules)
+
+---
+
+## Integration tests
+
+Test multiple modules and their interactions
+
+Sometimes it is hard to tell whether the test is an unit test or an integration test.
+
+Sometimes mixed tests are used (some dependencies are mocked, some are not).
+
+---
+
+## Testing React components
+
+Popular libraries:
+
+- [enzyme](https://github.com/airbnb/enzyme)
+- [**react-testing-library**](https://github.com/testing-library/react-testing-library)
+
+---
+
+TODO: complete the part about react-testing-library
+
+---
+
+## What happens when a function component is invoked?
+
+```tsx
+const result = GlobalTemperatureChart()
+```
+
+---
+
+```tsx
+const result = {
+  type: 'div',
+  key: null,
+  ref: null,
+  props: {
+    children: 'Loading',
+  },
+  _owner: null,
+  _store: {},
+}
+```
+
+---
+
+## A naive test
+
+```tsx
+const result = GlobalTemperatureChart()
+/* {
+  type: 'div',
+  key: null,
+  ref: null,
+  props: {
+    children: 'Loading',
+  },
+  _owner: null,
+  _store: {},
+} */
+
+if (result.type !== 'div' || result.props.children !== 'Loading') {
+  console.error(
+    'GlobalTemperatureChart does not show the Loading state correctly',
+  )
+}
+```
+
+---
