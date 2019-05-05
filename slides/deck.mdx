@@ -1,6 +1,7 @@
 import { Head, Code, Appear, components as Components } from 'mdx-deck'
 import { FullscreenCode, Split, SplitRight } from 'mdx-deck/layouts'
 import ThemedCodeSurfer from './components/themed-code-surfer.js'
+import ImageWithLabel from './components/image-with-label.js'
 
 import { future } from 'mdx-deck/themes'
 import codeHighlightStyle from 'react-syntax-highlighter/styles/prism/tomorrow'
@@ -302,7 +303,15 @@ jest process-chart-point.js --watch
 
 ---
 
-TODO: gif from running tests
+<ImageWithLabel label="Jest running tests">
+  <img src="https://jestjs.io/img/content/feature-fast.png" height="800" />
+</ImageWithLabel>
+
+---
+
+<ImageWithLabel label="Jest error messages">
+  <img src="https://jestjs.io/img/content/matchers/equals.png" height="800" />
+</ImageWithLabel>
 
 ---
 
@@ -416,6 +425,12 @@ component dynamically at runtime instead of using a direct static link in the co
 
 ---
 
+<ImageWithLabel label="Jest showing error messages for mocked functions">
+  <img src="https://jestjs.io/img/content/feature-mocking.png" height="800" />
+</ImageWithLabel>
+
+---
+
 ## Cases to be tested in task 2
 
 - happy path - network request succeeds
@@ -503,6 +518,138 @@ component dynamically at runtime instead of using a direct static link in the co
 
 ---
 
+## TDD - Test Driven Development
+
+- alternative way of development
+
+- writing tests before writing code (tests are _red_)
+- then, writing just enough code so that tests pass (tests are _green_)
+- writing more tests to cover other cases
+
+---
+
+<ThemedCodeSurfer
+  title="TDD example"
+  code={require('!raw-loader!./snippets/14-tdd-example.js').default}
+  steps={[
+    {
+      notes:
+        'We will try to write this function complying to an extreme TDD approach',
+      range: [1, 31],
+    },
+    {
+      notes: 'Start with an empty function signature',
+      lines: [33],
+    },
+    {
+      notes: 'Initial test',
+      range: [35, 48],
+    },
+    {
+      notes: 'Implementation that makes that test pass',
+      range: [35, 55],
+    },
+    {
+      notes: 'Another test, implementation does not cover it',
+      range: [57, 84],
+    },
+    {
+      notes: 'Implementation has to be modified to cover both those tests',
+      range: [86, 92],
+    },
+    {
+      notes: 'Yet another case tested',
+      range: [121, 131],
+    },
+    {
+      notes: 'Yet another implementation modification',
+      range: [135, 149],
+    },
+    {
+      notes:
+        'And so on, until all cases are covered by tests and the implementation passes',
+      range: [135, 151],
+    },
+  ]}
+/>
+
+---
+
+## Test coverage
+
+- codebase analysis that provides a useful and measurable metric
+- displays lines of code that were run during tests
+- useful to determine branches of execution (`if`s, `switch`es, etc.) and functions that are not tested
+- in an ideal world, code coverage should be increased with each PR
+
+Tools: **jest** (by default), [nyc](https://github.com/istanbuljs/nyc)
+
+---
+
+<ImageWithLabel label="Test coverage using jest">
+  <img src="https://jestjs.io/img/content/feature-coverage.png" height="800" />
+</ImageWithLabel>
+
+---
+
+## Test coverage live
+
+1. Checkout branch `task-3`
+2. Run `npm run test -- --coverage`
+3. Take a look at the generated coverage
+4. Notice which functions and branches are not covered
+5. (optional) Create more tests and see how the coverage changes
+
+---
+
+## Testing in CI
+
+CI - Continous Integration
+
+- running some processes after each commit/push on a separate machine (usually in the cloud)
+- processes include: _building the app_, _linting_, _testing_
+- faster code verification (e.g. reviewers do not have to build the code themselves to see that linting fails)
+- PRs may be temporarily rejected if CI fails
+
+Example CI services: [Travis CI](https://travis-ci.org/), [CircleCI](https://circleci.com/), [Azure
+Pipelines](https://azure.microsoft.com/pl-pl/services/devops/pipelines/),
+[Jenkins](https://jenkins.io/)
+
+Most are free for public, open source projects
+
+---
+
+<ThemedCodeSurfer
+  title="Example CircleCI configuration"
+  language="yaml"
+  code={require('!raw-loader!./snippets/13-circleci.yml').default}
+  steps={[
+    {},
+    {
+      range: [3, 23],
+      notes: 'The build job',
+    },
+    {
+      range: [25, 32],
+      notes: 'The test job',
+    },
+    {
+      range: [34, 41],
+      notes: 'Workflows - jobs with dependencies between them',
+    },
+  ]}
+/>
+
+---
+
+## Understanding legacy code through tests
+
+- faced with complex, legacy code
+- instead of trying to take it in all at once, try writing tests
+- they will serve as documentation
+- they will help understand that code
+- they will help catch regressions in case of a refactor
+
 ---
 
 ## Unit tests summary
@@ -510,9 +657,22 @@ component dynamically at runtime instead of using a direct static link in the co
 - test single components/functions in isolation
 - fast
 - small
-- use Dependency Injection and mocking to isolate units
+- relatively easy to write
+- serve as basic documentation
+- can help understand complex legacy code
 - very useful for testing business logic (pure functions, functions that process data, reducers, etc.)
 - do not guarantee that the app will ever work (does not integrate modules)
+
+---
+
+## Unit tests guidelines
+
+1. Use Dependency Injection and mocks to isolate modules/components into units
+2. Use spies (mocked functions) to test if a function has been invoked and what were the arguments
+3. Use code coverage reporting tools to determine how much of the project is covered by tests
+4. Integrate testing into your CI pipeline for fast verification
+5. Do not obsess trying to get code coverage to 100%
+6. Do not obsess with mocking everything
 
 ---
 
