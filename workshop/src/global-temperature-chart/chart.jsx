@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { processChartPoint } from './process-chart-point';
 import { getGlobalTemperatureChartData } from './get-global-temperature-chart-data';
 
@@ -38,7 +38,7 @@ export const GlobalTemperatureChart = ({ fetch }) => {
       })
       .catch(error => {
         dispatch({
-          type: 'success',
+          type: 'error',
           error
         });
       });
