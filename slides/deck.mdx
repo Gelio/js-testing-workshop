@@ -791,53 +791,70 @@ Popular libraries:
 
 ---
 
-TODO: e2e tests
+## End-to-end (e2e) tests
+
+- automatic testing in a real environment
+- no mocks, only using a built app via a browser
+- using a browser as a regular user would
+- usually a _staging_ environment is used on a backend
+- e2e tests usually take the longest time to complete
+
+Example tools: [Selenium](https://www.seleniumhq.org/),
+[testcafe](https://github.com/DevExpress/testcafe), [**cypress**](https://www.cypress.io/)
 
 ---
 
-## What happens when a function component is invoked?
+## cypress
 
-```tsx
-const result = GlobalTemperatureChart()
-```
-
----
-
-```tsx
-const result = {
-  type: 'div',
-  key: null,
-  ref: null,
-  props: {
-    children: 'Loading',
-  },
-  _owner: null,
-  _store: {},
-}
-```
+- friendly API that looks synchronous
+- a dashboard for inspecting tests step-by-step
+- allows taking screenshots and saving pages to PDF
+- can capture video of a test
+- only withs with Chrome and Electron
 
 ---
 
-## A naive test
-
-```tsx
-const result = GlobalTemperatureChart()
-/* {
-  type: 'div',
-  key: null,
-  ref: null,
-  props: {
-    children: 'Loading',
-  },
-  _owner: null,
-  _store: {},
-} */
-
-if (result.type !== 'div' || result.props.children !== 'Loading') {
-  console.error(
-    'GlobalTemperatureChart does not show the Loading state correctly',
-  )
-}
-```
+TODO: Example test using cypress
 
 ---
+
+TODO: task 5 - e2e tests
+
+---
+
+## Visual testing
+
+- components can be displayed in isolation
+- screenshots of the app can be compared across commits
+- visual differences can be found by diffing the screenshots
+
+<ImageWithLabel label="Visual diff">
+  <img
+    src="https://storybook.js.org/docs/static/image-diff-2-06a25a9565ed30f9318b54cb1f9e3abe-6fae4.png"
+    width="80%"
+  />
+</ImageWithLabel>
+
+---
+
+## Visual testing tools
+
+- [Storybook](https://storybook.js.org/) (for displaying components in isolation)
+- [cypress](https://www.cypress.io/)
+- [Puppeteer](https://github.com/GoogleChrome/puppeteer) (for controlling the browser and taking screenshots)
+
+---
+
+<ThemedCodeSurfer
+  title="Example visual test"
+  code={require('!raw-loader!./snippets/17-visual-test.js').default}
+  steps={[{}]}
+/>
+
+---
+
+TODO: summary
+
+---
+
+Thank you for your participation!
