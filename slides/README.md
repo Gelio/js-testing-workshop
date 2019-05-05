@@ -88,6 +88,10 @@ presenter and one for the audience. The content will be in sync.
 
 ## Exporting
 
+First, modify `mdx-deck`'s code in `node_modules`, according to this comment:
+
+https://github.com/pomber/code-surfer/issues/8#issuecomment-422095168
+
 To build the presentation deck as static HTML:
 
 ```sh
