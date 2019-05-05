@@ -695,7 +695,103 @@ Popular libraries:
 
 ---
 
-TODO: complete the part about react-testing-library
+## react-testing-library
+
+- renders React components in a test environment
+- allows component interaction (component lifecycle, user events, etc.)
+
+---
+
+<ThemedCodeSurfer
+  title="Component to be tested"
+  code={
+    require('!raw-loader!./snippets/15-integration-testing-component.js')
+      .default
+  }
+  steps={[
+    {
+      notes: 'GlobalTemperatureChart with a twist',
+    },
+    {
+      range: [5, 24],
+      notes: "Reducer to capture state changes (similar to redux's reducers)",
+    },
+    {
+      range: [26, 29],
+      notes: 'useReducer instead of 3 individual useStates',
+    },
+    {
+      range: [31, 45],
+      notes: 'dispatch is used to change the state atomically',
+    },
+    {
+      range: [47, 56],
+      notes: 'Rendering stays the same',
+    },
+  ]}
+/>
+
+---
+
+<ThemedCodeSurfer
+  title="Integration tests"
+  code={
+    require('!raw-loader!./snippets/15-integration-testing-tests.js').default
+  }
+  steps={[
+    {},
+    {
+      range: [2, 5],
+      notes: 'Imports from the library and a cleanup handler after each test',
+    },
+    {
+      range: [7, 25],
+      notes: 'A test',
+    },
+    {
+      range: [9, 13],
+      notes: 'Mocked fetch',
+    },
+    {
+      lines: [15, 24],
+      notes: 'Due to using hooks, all rendering takes place inside `act`',
+    },
+    {
+      range: [16, 18],
+      notes: 'Render the component, pass mocked fetch',
+    },
+    {
+      lines: [20],
+      notes: 'Test if the component is initially in the loading state',
+    },
+    {
+      lines: [22],
+      notes: 'Wait for component to rerender into the success state',
+    },
+    {
+      lines: [8, 23],
+      notes: 'Finish the test',
+    },
+  ]}
+/>
+
+---
+
+## Integration tests task
+
+1. Checkout `task-4` branch
+2. Write 2 more tests: check the success path and the error path
+3. Observe the results of `npm run test`
+
+- ignore the warnings about _An update to ..._ and _The callback passed to ..._
+
+  They are due to testing hooks, which is not yet fully supported
+
+- those would not be problems with regular classes
+
+---
+
+TODO: e2e tests
 
 ---
 
