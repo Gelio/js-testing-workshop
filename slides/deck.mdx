@@ -2,6 +2,7 @@ import { Head, Code, Appear, components as Components } from 'mdx-deck'
 import { FullscreenCode, Split, SplitRight } from 'mdx-deck/layouts'
 import ThemedCodeSurfer from './components/themed-code-surfer.js'
 import ImageWithLabel from './components/image-with-label.js'
+import PostponedVideo from './components/postponed-video.js'
 
 import { future } from 'mdx-deck/themes'
 import codeHighlightStyle from 'react-syntax-highlighter/styles/prism/tomorrow'
@@ -155,8 +156,8 @@ Author: Grzegorz Rozdzialik
 
 ## What is _automated testing_?
 
-<Appear>
-  <Components.ul>
+<Components.ul>
+  <Appear>
     <li>execution of a software component to evaluate its properties</li>
     <li>verifying that the code is correct</li>
     <li>
@@ -165,8 +166,8 @@ Author: Grzegorz Rozdzialik
     </li>
     <li>verifying that the system works as designed</li>
     <li>using software to imitate user's behavior and find bugs</li>
-  </Components.ul>
-</Appear>
+  </Appear>
+</Components.ul>
 
 ---
 
@@ -446,6 +447,10 @@ component dynamically at runtime instead of using a direct static link in the co
       .default
   }
   steps={[
+    {
+      notes:
+        'Notice, that wanting to test this component resulted in clearer code',
+    },
     { notes: 'What if it was to be tested now?' },
     { lines: [11], notes: 'A global fetch is used. How to inject it?' },
   ]}
@@ -482,6 +487,15 @@ component dynamically at runtime instead of using a direct static link in the co
         'Still impure, as getGlobalTemperatureChartData is used directly. Does it matter? Not much',
     },
   ]}
+/>
+
+---
+
+## Math time
+
+<img
+  src="https://media.giphy.com/media/l41lUR5urK4IAk3V6/giphy.gif"
+  alt="Math time"
 />
 
 ---
@@ -602,6 +616,15 @@ Tools: **jest** (by default), [nyc](https://github.com/istanbuljs/nyc)
 
 ---
 
+## A word about CI
+
+<img
+  src="https://media.giphy.com/media/14cHY86AYr24o0/giphy.gif"
+  alt="Human and robot high fiving"
+/>
+
+---
+
 ## Testing in CI
 
 CI - Continous Integration
@@ -673,6 +696,16 @@ Most are free for public, open source projects
 4. Integrate testing into your CI pipeline for fast verification
 5. Do not obsess trying to get code coverage to 100%
 6. Do not obsess with mocking everything
+
+---
+
+## Integration
+
+<img
+  src="./static/istockphoto-153019298-1024x1024.jpg"
+  alt="Items in a box"
+  width="80%"
+/>
 
 ---
 
@@ -791,6 +824,10 @@ Popular libraries:
 
 ---
 
+## End-to-end tests
+
+---
+
 ## End-to-end (e2e) tests
 
 - automatic testing in a real environment
@@ -814,11 +851,47 @@ Example tools: [Selenium](https://www.seleniumhq.org/),
 
 ---
 
-TODO: Example test using cypress
+### Cypress example
+
+<PostponedVideo src="./static/cypress example test.mp4" />
 
 ---
 
-TODO: task 5 - e2e tests
+<ThemedCodeSurfer
+  title="E2E test using Cypress"
+  code={require('!raw-loader!./snippets/16-e2e-test-cypress.js').default}
+  steps={[
+    {},
+    {
+      range: [1, 3],
+      notes:
+        'Initial setup - tell the browser what page to open (a server has to be running in the background)',
+    },
+    {
+      range: [5, 13],
+      notes: 'The code looks synchronous, but is asynchronous',
+    },
+    {
+      range: [25, 35],
+      notes: 'Cypress can also imitate the user typing',
+    },
+  ]}
+/>
+
+---
+
+## E2E task
+
+1. Checkout branch `task-5`
+2. Edit `App.js`: add a _decrement_ button and display `text`, but reversed
+3. Add tests for the newly added behavior
+
+- use `npm run cypress:open` to open Cypress GUI
+- use `npm run cypress:run` to run a test suite in the console
+
+---
+
+## Visual tests
 
 ---
 
@@ -853,7 +926,54 @@ TODO: task 5 - e2e tests
 
 ---
 
-TODO: summary
+## Testing summary
+
+<Components.ul>
+  <Appear>
+    <li>
+      unit tests - test parts of the codebase in isolation, using mocks for
+      dependencies
+    </li>
+    <li>integration tests - test multiple components together</li>
+    <li>e2e tests - test the software by interacting as an end user would</li>
+    <li>pure functions are the easiest to test and reason about</li>
+    <li>
+      writing tests can help come up with a better codebase architecture (less
+      dependencies and coupling)
+    </li>
+    <li>tests are a time investment, that may not pay off</li>
+    <li>what to test and how to test needs to come through experience</li>
+    <li>
+      after the initial development, tests help catch regressions (e.g. a
+      breaking change from
+    </li>
+    backend without any frontend changes)
+    <li>tests serve as basic documentation</li>
+    <li>tests can help understand a legacy codebase</li>
+  </Appear>
+</Components.ul>
+
+---
+
+<ImageWithLabel label="Test type comparison">
+  <img src="./static/0_8Uapgla-XhuHS6ph.png" width="80%" />
+</ImageWithLabel>
+
+---
+
+## Glossary
+
+- assertion libraries
+- test runners
+- AAA - Arrange, Act, Assert
+- Dependency Injection
+- mocking
+- spies
+- code coverage
+- CI - Continous Integration
+- Test Driven Development
+- pure functions
+- referential transparency
 
 ---
 
