@@ -539,6 +539,53 @@ component dynamically at runtime instead of using a direct static link in the co
 
 ---
 
+## Questions
+
+1. Come up with a function that is pure, but does not maintain referential transparency.
+2. Come up with a function that maintains referential transparency, but is not pure
+
+---
+
+## Pure, but not referentially transparent
+
+```ts
+const someState = {
+  counter: 0,
+  accessedTimes: 0,
+}
+
+function getCounter(state) {
+  // NOTE: modifies parameters -> breaks referential transparency
+  state.accessedTimes++
+
+  return state.counter
+}
+```
+
+---
+
+## Referentially transparent, but impure
+
+```ts
+const someState = {
+  counter: 0,
+}
+
+function getCounter() {
+  // NOTE: accesses a global object, not pure
+  return state.counter
+}
+```
+
+---
+
+## Math section conclusion
+
+Try to create functions that are pure and maintain referential transparency, as they are the easiest
+to test.
+
+---
+
 ## TDD - Test Driven Development
 
 - alternative way of development
